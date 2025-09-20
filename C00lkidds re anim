@@ -1281,6 +1281,7 @@ local function Gash()
         newbv:Destroy()
 
         -- End WSoverride
+		CanSlash = false
         Debounce = false
         Humanoid.AutoRotate = true
 
