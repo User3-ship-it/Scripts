@@ -19,7 +19,7 @@ end
 if isfile(Path.."PursuerChase.ogg") then
 Theme = Instance.new("Sound")
 Theme.SoundId = "rbxassetid://109462962253306"
-Theme.Volume = 0.4
+Theme.Volume = 0.2
 Theme.Parent = nil
 Theme.Looped = true
 else
@@ -1102,7 +1102,7 @@ Timeout = 0.25,
 ToolFling = false,
 }
 
-local script = game:GetObjects("rbxassetid://138120733471443")[1]
+local script = game:GetObjects("rbxassetid://87061569874511")[1]
 local Animations = script:WaitForChild("Animations")
 local Idle, Walking, Running, Enraged = false, false, false, false
 local Debounce, Shift, CanSlash = false, false, false
@@ -1129,9 +1129,30 @@ Theme:Play()
 
 local GUI = script.UIs:WaitForChild("TemporaryUI")
 GUI.Parent = game:GetService("CoreGui")
+
+local Player = game.Players.LocalPlayer
 local AbilityContainer = GUI:WaitForChild("AbilityContainer")
+
 GUI.PlayerInfo.PlayerIcon.Image = "rbxthumb://type=AvatarHeadShot&id=" .. Player.UserId .. "&w=420&h=420"
-AbilityContainer.GashingWound.Image = "rbxassetid://72931353082530"
+
+local GashingWound = AbilityContainer:WaitForChild("GashingWound")
+GashingWound.Image = "rbxassetid://124520277203507"
+GashingWound.ImageColor3 = Color3.fromRGB(255, 255, 255)
+GashingWound.ResampleMode = Enum.ResamplerMode.Pixelated
+
+if GashingWound:FindFirstChild("Clipping") and GashingWound.Clipping:FindFirstChild("Top") then
+    GashingWound.Clipping.Top.ImageTransparency = 1
+end
+
+local RagingPace = AbilityContainer:WaitForChild("RagingPace")
+RagingPace.Image = "rbxassetid://129376879745624"
+RagingPace.ImageColor3 = Color3.fromRGB(255, 255, 255)
+RagingPace.ResampleMode = Enum.ResamplerMode.Pixelated
+if RagingPace:FindFirstChild("Clipping") and RagingPace.Clipping:FindFirstChild("Top") then
+    RagingPace.Clipping.Top.ImageTransparency = 1
+end
+RagingPace.AbilityName.Text = "Pizza Delivery"
+
 
 local function PlaySound(SoundID, TimePosition)
 local Sound = Instance.new("Sound")
@@ -1188,14 +1209,6 @@ if Debounce then return end
 Debounce = true
 CanSlash = true
 Humanoid.WalkSpeed = 3
-local sfx = Instance.new("Sound")
-sfx.Parent = RootPart
-if isWSspeeding then
-sfx.SoundId = "rbxassetid://136678976484766"
-else
-sfx.SoundId = "rbxassetid://85747753544264"
-end
-sfx:Play()
 PlayAnim(Character, Animations.Slash, 0.1, 1)
 --PlaySound("PursuerPunch.ogg", 0)
 task.wait(0.65)
@@ -1274,6 +1287,13 @@ local function Gash()
     sfx.Parent = RootPart
     sfx.SoundId = "rbxassetid://137599783866468"
     sfx:Play()
+	sfx.Volume = 0.2
+
+	local sfx2 = Instance.new("Sound")
+    sfx2.Parent = RootPart
+    sfx2.SoundId = "rbxassetid://81547863237038"
+    sfx2:Play()
+	sfx2.Volume = 0.3
 
     PlayAnim(Character, Animations.WSoverrideStart, 0.4, 1)
     task.wait(1)
@@ -1288,7 +1308,7 @@ local function Gash()
     newbv.MaxForce = Vector3.new(1e5, 0, 1e5)
 
     -- Keep the WSoverride animation active for the duration of movement
-    task.delay(2, function()
+    task.delay(1.4, function()
         -- Stop BodyVelocity after some time
         newbv:Destroy()
         sfx:Destroy()
@@ -1304,9 +1324,12 @@ local function Gash()
         Humanoid.AutoRotate = true
 
         -- Stop WSoverrideLoop animation cleanly
-		StopAnim(Character, Animations.WSoverrideStart)
+		StopAnim(Character, Animations.WSoverrideLoop)
 		PlayAnim(Character, Animations.WSoverrideEnd, 1, 1)
-		isWSOverriding = false
+		task.spawn(function()
+			task.wait(0.5)
+		    isWSOverriding = false
+		end)
     end)
 
     if Shift then
@@ -1317,46 +1340,70 @@ local function Gash()
 end
 
 local function ToggleRage()
-if Debounce then return end
-Enraged = not Enraged
-Debounce = true
-if Enraged then
---PlaySound("PursuerRage.ogg", 1)
-PlayAnim(Character, Animations.EnragedStart, 0, 1)
-task.wait(0.15)
-task.wait(1)
-Debounce = false
-if RootPart.Velocity.Magnitude < 1 and workspace:FindPartOnRay(Ray.new(RootPart.Position, (CFrame.new(RootPart.Position, RootPart.Position + Vector3.new(0, -1, 0))).LookVector * 4), Character) then
-Idle = true
-Walking = false
-Running = false
-PlayAnim(Character, Animations.EnragedIdle, 0, 1)
-elseif RootPart.Velocity.Magnitude > 1 and workspace:FindPartOnRay(Ray.new(RootPart.Position, (CFrame.new(RootPart.Position, RootPart.Position + Vector3.new(0, -1, 0))).LookVector * 4), Character) then
-Idle = false
-Walking = true
-Running = false
-PlayAnim(Character, Animations.EnragedWalk, 0, 1)
-end	
-else
-Debounce = false
-if RootPart.Velocity.Magnitude < 1 and workspace:FindPartOnRay(Ray.new(RootPart.Position, (CFrame.new(RootPart.Position, RootPart.Position + Vector3.new(0, -1, 0))).LookVector * 4), Character) then
-Idle = true
-Walking = false
-Running = false
-PlayAnim(Character, Animations.Idle, 0, 1)
-elseif RootPart.Velocity.Magnitude > 1 and workspace:FindPartOnRay(Ray.new(RootPart.Position, (CFrame.new(RootPart.Position, RootPart.Position + Vector3.new(0, -1, 0))).LookVector * 4), Character) then
-Idle = false
-Walking = true
-Running = false
-PlayAnim(Character, Animations.Walk, 0, 1)
-end	
+    if Debounce then return end
+    Debounce = true
+
+    -- Play summon animation
+    PlayAnim(Character, Animations.PizzaSummon, 0, 1)
+
+    -- Play sound
+    local sfx = Instance.new("Sound")
+    sfx.Parent = RootPart
+    sfx.SoundId = "rbxassetid://88445378869172"
+    sfx.Volume = 0.3
+    sfx:Play()
+
+    task.wait(2)
+
+    -- Determine movement state
+    local isMoving = RootPart.Velocity.Magnitude > 1
+    local onGround = workspace:FindPartOnRay(
+        Ray.new(RootPart.Position, Vector3.new(0, -4, 0)),
+        Character
+    )
+
+    if RageActive then
+        -- Enraged animations
+        if onGround then
+            if isMoving then
+                Idle = false
+                Walking = true
+                Running = false
+                PlayAnim(Character, Animations.EnragedWalk, 0, 1)
+            else
+                Idle = true
+                Walking = false
+                Running = false
+                PlayAnim(Character, Animations.EnragedIdle, 0, 1)
+            end
+        end
+    else
+        -- Normal animations
+        if onGround then
+            if isMoving then
+                Idle = false
+                Walking = true
+                Running = false
+                PlayAnim(Character, Animations.Walk, 0, 1)
+            else
+                Idle = true
+                Walking = false
+                Running = false
+                PlayAnim(Character, Animations.Idle, 0, 1)
+            end
+        end
+    end
+
+    -- Adjust walk speed
+    if Shift == true then
+        Humanoid.WalkSpeed = 24
+    else
+        Humanoid.WalkSpeed = 13
+    end
+
+    Debounce = false
 end
-if Shift == true then
-Humanoid.WalkSpeed = 24
-else
-Humanoid.WalkSpeed = 13	
-end
-end
+
 
 local function Execute()
 if Debounce then return end
@@ -1505,6 +1552,15 @@ local Target = Hit.Parent
 local TargetHumanoid = Target:FindFirstChildOfClass("Humanoid")
 if TargetHumanoid then
 Empyrean.Fling(Hit, DefaultFlingOptions)
+local sfx = Instance.new("Sound")
+sfx.Parent = RootPart
+if isWSspeeding then
+sfx.SoundId = "rbxassetid://136678976484766"
+else
+sfx.SoundId = "rbxassetid://85747753544264"
+end
+sfx.Volume = 0.1
+sfx:Play()
 end
 end)
 
