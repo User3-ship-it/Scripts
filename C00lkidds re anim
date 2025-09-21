@@ -1307,6 +1307,12 @@ local function Gash()
         newbv:Destroy()
         sfx:Destroy()
 
+	local sfx2 = Instance.new("Sound")
+    sfx2.Parent = RootPart
+    sfx2.SoundId = "rbxassetid://82520834438491"
+    sfx2:Play()
+
+
         -- End WSoverride
 		CanSlash = false
         Debounce = false
@@ -1344,7 +1350,7 @@ local function ToggleRage()
 
 	local sfx2 = Instance.new("Sound")
     sfx2.Parent = RootPart
-    sfx2.SoundId = "rbxassetid://82520834438491"
+    sfx2.SoundId = "rbxassetid://81547863237038"
     sfx2:Play()
 
     task.wait(2)
