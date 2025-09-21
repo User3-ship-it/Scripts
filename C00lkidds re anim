@@ -1280,92 +1280,58 @@ local function Gash()
     Debounce = true
     CanSlash = true
     Humanoid.AutoRotate = false
-    isWSOverriding = true
+    isWSOverriding = true -- start blocking normal animations
 
-    -- Start dash sound
+    -- Play start animation
     local sfx = Instance.new("Sound")
     sfx.Parent = RootPart
     sfx.SoundId = "rbxassetid://137599783866468"
-    sfx.Volume = 0.2
     sfx:Play()
+	sfx.Volume = 0.2
 
-    -- Start animation
     PlayAnim(Character, Animations.WSoverrideStart, 0.4, 1)
     task.wait(1)
 
-    -- Loop anim
+    -- Play loop animation
     PlayAnim(Character, Animations.WSoverrideLoop, 1, 1)
 
-    -- Dash movement
+    -- Apply forward velocity
     local newbv = Instance.new("BodyVelocity")
+    newbv.Parent = RootPart
     newbv.Velocity = RootPart.CFrame.LookVector * 60
     newbv.MaxForce = Vector3.new(1e5, 0, 1e5)
-    newbv.Parent = RootPart
 
-    local touchedConn
-    touchedConn = RootPart.Touched:Connect(function(hit)
-        -- only stop if touching a character
-        local hum = hit.Parent:FindFirstChildOfClass("Humanoid")
-        if hum and hum ~= Humanoid then
-            -- cleanup velocity & sounds
-            if newbv.Parent then newbv:Destroy() end
-            if sfx.Parent then sfx:Destroy() end
-            if touchedConn then
-                touchedConn:Disconnect()
-                touchedConn = nil
-            end
-
-            -- impact sound
-            local sfx2 = Instance.new("Sound")
-            sfx2.Parent = RootPart
-            sfx2.SoundId = "rbxassetid://118512462005633"
-            sfx2:Play()
-
-            -- stop anim
-            StopAnim(Character, Animations.WSoverrideLoop)
-            PlayAnim(Character, Animations.WSoverrideEnd, 1, 1)
-
-            task.delay(0.5, function()
-                isWSOverriding = false
-                CanSlash = false
-                Debounce = false
-                Humanoid.AutoRotate = true
-            end)
-        end
-    end)
-
-    -- Safety timeout
+    -- Keep the WSoverride animation active for the duration of movement
     task.delay(1.4, function()
-	if isWSoverriding then
-		if newbv.Parent then newbv:Destroy() end
-        if sfx.Parent then sfx:Destroy() end
-        if touchedConn then
-            touchedConn:Disconnect()
-            touchedConn = nil
-        end
+        -- Stop BodyVelocity after some time
+        newbv:Destroy()
+        sfx:Destroy()
 
-        local sfx2 = Instance.new("Sound")
-        sfx2.Parent = RootPart
-        sfx2.SoundId = "rbxassetid://82520834438491"
-        sfx2:Play()
+    local sfx2 = Instance.new("Sound")
+    sfx2.Parent = RootPart
+    sfx2.SoundId = "rbxassetid://82520834438491"
+    sfx2:Play()
 
-        StopAnim(Character, Animations.WSoverrideLoop)
-        PlayAnim(Character, Animations.WSoverrideEnd, 1, 1)
+        -- End WSoverride
+		CanSlash = false
+        Debounce = false
+        Humanoid.AutoRotate = true
 
-        task.delay(0.5, function()
-            isWSOverriding = false
-            CanSlash = false
-            Debounce = false
-            Humanoid.AutoRotate = true
-        end)
-	end
+        -- Stop WSoverrideLoop animation cleanly
+		StopAnim(Character, Animations.WSoverrideLoop)
+		PlayAnim(Character, Animations.WSoverrideEnd, 1, 1)
+		task.spawn(function()
+			task.wait(0.5)
+		    isWSOverriding = false
+		end)
     end)
 
-    -- WalkSpeed restore
-    Humanoid.WalkSpeed = Shift and 24 or 13
+    if Shift then
+        Humanoid.WalkSpeed = 24
+    else
+        Humanoid.WalkSpeed = 13
+    end
 end
-
-
 
 local function ToggleRage()
     if Debounce then return end
@@ -1381,10 +1347,12 @@ local function ToggleRage()
     sfx.Volume = 0.3
     sfx:Play()
 
+	
 	local sfx2 = Instance.new("Sound")
     sfx2.Parent = RootPart
     sfx2.SoundId = "rbxassetid://81547863237038"
     sfx2:Play()
+	sfx2.Volume = 0.3
 
     task.wait(2)
 
