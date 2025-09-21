@@ -1188,7 +1188,6 @@ if Debounce then return end
 Debounce = true
 CanSlash = true
 Humanoid.WalkSpeed = 3
-PlayAnim(Character, Animations.Slash, 0.1, 1)
 local sfx = Instance.new("Sound")
 sfx.Parent = RootPart
 if isWSspeeding then
@@ -1197,6 +1196,7 @@ else
 sfx.SoundId = "rbxassetid://85747753544264"
 end
 sfx:Play()
+PlayAnim(Character, Animations.Slash, 0.1, 1)
 --PlaySound("PursuerPunch.ogg", 0)
 task.wait(0.65)
 Debounce = false
@@ -1270,25 +1270,25 @@ local function Gash()
     isWSOverriding = true -- start blocking normal animations
 
     -- Play start animation
+    local sfx = Instance.new("Sound")
+    sfx.Parent = RootPart
+    sfx.SoundId = "rbxassetid://137599783866468"
+    sfx:Play()
+
     PlayAnim(Character, Animations.WSoverrideStart, 0.4, 1)
     task.wait(1)
 
     -- Play loop animation
     PlayAnim(Character, Animations.WSoverrideLoop, 1, 1)
 
-    local sfx = Instance.new("Sound")
-    sfx.Parent = RootPart
-    sfx.SoundId = "rbxassetid://137599783866468"
-    sfx:Play()
-
     -- Apply forward velocity
     local newbv = Instance.new("BodyVelocity")
     newbv.Parent = RootPart
-    newbv.Velocity = RootPart.CFrame.LookVector * 80
+    newbv.Velocity = RootPart.CFrame.LookVector * 60
     newbv.MaxForce = Vector3.new(1e5, 0, 1e5)
 
     -- Keep the WSoverride animation active for the duration of movement
-    task.delay(0.7, function()
+    task.delay(2, function()
         -- Stop BodyVelocity after some time
         newbv:Destroy()
         sfx:Destroy()
