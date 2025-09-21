@@ -1289,12 +1289,6 @@ local function Gash()
     sfx:Play()
 	sfx.Volume = 0.2
 
-	local sfx2 = Instance.new("Sound")
-    sfx2.Parent = RootPart
-    sfx2.SoundId = "rbxassetid://81547863237038"
-    sfx2:Play()
-	sfx2.Volume = 0.3
-
     PlayAnim(Character, Animations.WSoverrideStart, 0.4, 1)
     task.wait(1)
 
@@ -1312,11 +1306,6 @@ local function Gash()
         -- Stop BodyVelocity after some time
         newbv:Destroy()
         sfx:Destroy()
-
-    local sfx2 = Instance.new("Sound")
-    sfx2.Parent = RootPart
-    sfx2.SoundId = "rbxassetid://82520834438491"
-    sfx2:Play()
 
         -- End WSoverride
 		CanSlash = false
@@ -1352,6 +1341,11 @@ local function ToggleRage()
     sfx.SoundId = "rbxassetid://88445378869172"
     sfx.Volume = 0.3
     sfx:Play()
+
+	local sfx2 = Instance.new("Sound")
+    sfx2.Parent = RootPart
+    sfx2.SoundId = "rbxassetid://82520834438491"
+    sfx2:Play()
 
     task.wait(2)
 
