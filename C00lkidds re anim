@@ -18,9 +18,9 @@ end
 
 if isfile(Path.."PursuerChase.ogg") then
 Theme = Instance.new("Sound")
-Theme.SoundId = "rbxassetid://108970961890401"
+Theme.SoundId = "rbxassetid://109462962253306"
 Theme.PlaybackSpeed = 0.15
-Theme.Volume = 0
+Theme.Volume = 0.4
 Theme.Parent = nil
 Theme.Looped = true
 else
@@ -1190,6 +1190,14 @@ Debounce = true
 CanSlash = true
 Humanoid.WalkSpeed = 3
 PlayAnim(Character, Animations.Slash, 0.1, 1)
+local sfx = Instance.New("Sound")
+sfx.Parent = RootPart
+if isWSspeeding then
+sfx.SoundId = "rbxassetid://136678976484766"
+else
+sfx.SoundId = "rbxassetid://85747753544264"
+end
+sfx:Play()
 --PlaySound("PursuerPunch.ogg", 0)
 task.wait(0.65)
 Debounce = false
@@ -1269,6 +1277,11 @@ local function Gash()
     -- Play loop animation
     PlayAnim(Character, Animations.WSoverrideLoop, 1, 1)
 
+    local sfx = Instance.New("Sound")
+    sfx.Parent = RootPart
+    sfx.SoundId = "rbxassetid://137599783866468"
+    sfx:Play()
+
     -- Apply forward velocity
     local newbv = Instance.new("BodyVelocity")
     newbv.Parent = RootPart
@@ -1279,6 +1292,12 @@ local function Gash()
     task.delay(0.7, function()
         -- Stop BodyVelocity after some time
         newbv:Destroy()
+        sfx:Destroy()
+
+    local sfx2 = Instance.New("Sound")
+    sfx2.Parent = RootPart
+    sfx2.SoundId = "rbxassetid://82520834438491"
+    sfx2:Play()
 
         -- End WSoverride
 		CanSlash = false
